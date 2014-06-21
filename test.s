@@ -1,8 +1,13 @@
+	.section .rodata
+.LC0:
+	.string	"%s\n"
 	.text
 	.globl	STRING_LENGTH
 	.globl	MOVE_STRING
 	.globl	TO_UPPER
 	.globl	TO_LOWER
+	.globl	PRINT_ENVIRONMENTS
+	.type	PRINT_ENVIRONMENTS, @function
 .equ	LOWER_TO_UPPER, 'A' - 'a'
 .equ	UPPER_TO_LOWER, 'a' - 'A'
 STRING_LENGTH:
@@ -89,4 +94,22 @@ TO_LOWER_L3:
 
 	mov		%ebp, %esp
 	pop		%ebp
+	ret
+
+PRINT_ENVIRONMENTS:
+	mov		16(%ebp), %edi
+PRINT_ENV_L1:
+	mov		(%edi), %eax
+	cmp		$0, %eax
+	jz		PRINT_ENV_L2
+	push	%edi
+	push	%eax
+	push	$.LC0
+	call	printf
+	addl	$8, %esp
+	pop		%edi
+	addl	$4, %edi
+	jmp		PRINT_ENV_L1
+
+PRINT_ENV_L2:
 	ret
