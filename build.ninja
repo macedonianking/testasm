@@ -1,0 +1,22 @@
+rule CC_BOOT
+  command = gcc -c $in -o $out
+  description = CC_BOOT $out
+
+rule LINK_BOOT
+  command = ld --oformat=binary --entry=main -Ttext=0x0000 -o $out $in
+  description = LINK_BOOT $out
+
+rule MAKE_DISK
+  command = bash make_disk.sh
+
+rule EXEC_BOOT
+  command = qemu-system-i386 -hda $in -boot d
+
+build boot.o : CC_BOOT boot.s
+build boot : LINK_BOOT boot.o
+build head.o : CC_BOOT head.s
+build head : LINK_BOOT head.o
+build disk.img : MAKE_DISK boot head make_disk.sh
+build run_cache : EXEC_BOOT disk.img
+
+default run_cache

@@ -1,1 +1,7 @@
-main
+disk.img
+boot
+head
+*.o
+*.sublime-workspace
+*.ninja_deps
+.ninja_log
